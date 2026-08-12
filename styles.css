@@ -279,13 +279,15 @@ p {
 
 .hero-scroll {
   position: absolute;
-  left: 50%;
+  left: 0;
+  right: 0;
   bottom: 1.5rem;
   z-index: 2;
   display: grid;
   justify-items: center;
   gap: 0.45rem;
-  transform: translateX(-50%);
+  width: max-content;
+  margin-inline: auto;
   color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
   opacity: 0;
@@ -1046,8 +1048,13 @@ p {
     border-bottom: 0;
   }
 
+  .hero {
+    min-height: 52dvh;
+    align-items: start;
+  }
+
   .hero-content {
-    padding: calc(var(--header-h) + 2.5rem) 1.15rem 5.5rem;
+    padding: calc(var(--header-h) + 1.35rem) 1.15rem 3.75rem;
   }
 
   .hero h1 {
@@ -1058,12 +1065,14 @@ p {
   }
 
   .hero-lead {
+    margin-top: 0.85rem;
     font-size: clamp(1.02rem, 4.4vw, 1.25rem);
     letter-spacing: 0.06em;
   }
 
   .hero-actions {
     width: 100%;
+    margin-top: 1.35rem;
   }
 
   .hero-actions .btn {
@@ -1071,7 +1080,7 @@ p {
   }
 
   .hero-scroll {
-    bottom: 1.1rem;
+    bottom: 0.85rem;
   }
 
   .section {
