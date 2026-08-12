@@ -2,8 +2,6 @@
   const header = document.querySelector(".site-header");
   const nav = document.querySelector("#site-nav");
   const toggle = document.querySelector(".nav-toggle");
-  const form = document.querySelector("#contact-form");
-  const status = document.querySelector("#form-status");
   const year = document.querySelector("#year");
   const sections = document.querySelectorAll("main section[id]");
   const navLinks = document.querySelectorAll(".site-nav a");
@@ -20,6 +18,7 @@
     nav.classList.remove("is-open");
     toggle.setAttribute("aria-expanded", "false");
     toggle.setAttribute("aria-label", "メニューを開く");
+    document.body.classList.remove("nav-open");
   };
 
   const openNav = () => {
@@ -27,6 +26,7 @@
     nav.classList.add("is-open");
     toggle.setAttribute("aria-expanded", "true");
     toggle.setAttribute("aria-label", "メニューを閉じる");
+    document.body.classList.add("nav-open");
   };
 
   toggle?.addEventListener("click", () => {
@@ -42,6 +42,12 @@
     link.addEventListener("click", () => {
       closeNav();
     });
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 720) {
+      closeNav();
+    }
   });
 
   const updateActiveNav = () => {
@@ -96,32 +102,4 @@
     serviceItems.forEach((item) => item.classList.add("is-visible"));
     revealItems.forEach((item) => item.classList.add("is-visible"));
   }
-
-  form?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    if (!status) return;
-
-    status.classList.remove("is-error");
-    status.textContent = "";
-
-    const data = new FormData(form);
-    const name = String(data.get("name") || "").trim();
-    const email = String(data.get("email") || "").trim();
-    const message = String(data.get("message") || "").trim();
-
-    if (!name || !email || !message) {
-      status.classList.add("is-error");
-      status.textContent = "必須項目をご入力ください。";
-      return;
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      status.classList.add("is-error");
-      status.textContent = "メールアドレスの形式をご確認ください。";
-      return;
-    }
-
-    status.textContent = "送信内容を受け付けました。担当よりご連絡いたします。";
-    form.reset();
-  });
 })();
