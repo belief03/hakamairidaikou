@@ -13,6 +13,23 @@
     year.textContent = String(new Date().getFullYear());
   }
 
+  const heroVideo = document.querySelector(".hero-video");
+  if (heroVideo) {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncHeroVideo = () => {
+      if (reduceMotion.matches) {
+        heroVideo.pause();
+        return;
+      }
+      const playPromise = heroVideo.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {});
+      }
+    };
+    syncHeroVideo();
+    reduceMotion.addEventListener("change", syncHeroVideo);
+  }
+
   const closeNav = () => {
     if (!nav || !toggle) return;
     nav.classList.remove("is-open");

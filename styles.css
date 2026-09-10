@@ -259,9 +259,19 @@ p {
   position: absolute;
   inset: 0;
   z-index: 0;
+  overflow: hidden;
   background:
     url("https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=2000&q=80")
       center / cover no-repeat;
+}
+
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
   transform: scale(1.04);
   animation: hero-drift 18s var(--ease) infinite alternate;
 }
@@ -1139,6 +1149,10 @@ p {
     background-position: center 42%;
   }
 
+  .hero-video {
+    object-position: center 42%;
+  }
+
   .hero-veil {
     background: linear-gradient(
       180deg,
@@ -1855,6 +1869,7 @@ p {
   }
 
   .hero-media,
+  .hero-video,
   .hero h1,
   .hero-lead,
   .hero-actions,
@@ -1868,6 +1883,10 @@ p {
     transition: none;
     opacity: 1;
     transform: none;
+  }
+
+  .hero-video {
+    display: none;
   }
 
   .hero-scroll-icon {

@@ -418,6 +418,18 @@ function syncPublic() {
       if (fs.existsSync(src)) copyFile(src, path.join(pub, file));
     }
 
+    const assetsSrc = path.join(ROOT, "assets");
+    const assetsOut = path.join(pub, "assets");
+    if (fs.existsSync(assetsSrc)) {
+      fs.mkdirSync(assetsOut, { recursive: true });
+      for (const file of fs.readdirSync(assetsSrc)) {
+        const src = path.join(assetsSrc, file);
+        if (fs.statSync(src).isFile()) {
+          copyFile(src, path.join(assetsOut, file));
+        }
+      }
+    }
+
     const blogOut = path.join(pub, "blog");
     fs.mkdirSync(blogOut, { recursive: true });
     for (const file of fs.readdirSync(blogOut)) {
