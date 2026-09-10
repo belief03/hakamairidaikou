@@ -21,7 +21,7 @@ Production / Preview の両方に入れるのがおすすめです。
 ## 3. ビルド設定
 
 - Build Command: `npm run build`（`package.json` の `build`）
-- Output: リポジトリルート（静的ファイル一式）
+- Output Directory: `public`（ビルドがサイト一式を `public/` に同期します）
 
 環境変数が無いときは `blog/fixtures/posts.json` のサンプル記事で HTML を生成します。
 

@@ -377,6 +377,34 @@ function clearGeneratedPosts(keepSlugs) {
   }
 }
 
+function copyFile(src, dest) {
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.copyFileSync(src, dest);
+}
+
+function copyDirHtml(srcDir, destDir) {
+  fs.mkdirSync(destDir, { recursive: true });
+  for (const file of fs.readdirSync(srcDir)) {
+    if (!file.endsWith(".html")) continue;
+    copyFile(path.join(srcDir, file), path.join(destDir, file));
+  }
+}
+
+/** Vercel は outputDirectory=public を配信する */
+function syncPublic() {
+  const pub = path.join(ROOT, "public");
+  fs.rmSync(pub, { recursive: true, force: true });
+  fs.mkdirSync(pub, { recursive: true });
+
+  for (const file of ["index.html", "styles.css", "script.js", "robots.txt", "sitemap.xml"]) {
+    const src = path.join(ROOT, file);
+    if (fs.existsSync(src)) copyFile(src, path.join(pub, file));
+  }
+
+  copyDirHtml(BLOG_DIR, path.join(pub, "blog"));
+  console.log("Synced site files to public/ for Vercel.");
+}
+
 async function main() {
   let rawPosts = await fetchFromMicroCMS();
   if (!rawPosts || rawPosts.length === 0) {
@@ -410,6 +438,7 @@ async function main() {
     fs.writeFileSync(path.join(ROOT, "robots.txt"), robots, "utf8");
   }
 
+  syncPublic();
   console.log(`Generated blog list + ${posts.length} posts + sitemap.xml`);
 }
 
