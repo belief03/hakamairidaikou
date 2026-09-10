@@ -147,7 +147,7 @@ function renderHeader({ active } = {}) {
       </button>
       <nav class="site-nav" id="site-nav" aria-label="メインメニュー">
         <a href="../index.html#about"><span class="nav-num">01</span>お墓参り代行とは</a>
-        <a href="../index.html#message"><span class="nav-num">02</span>代表より</a>
+        <a href="../index.html#message"><span class="nav-num">02</span>メッセージ</a>
         <a href="../index.html#service"><span class="nav-num">03</span>サービス</a>
         <a href="../index.html#price"><span class="nav-num">04</span>料金</a>
         <a href="../index.html#contact"><span class="nav-num">05</span>お問合せ</a>
@@ -161,10 +161,8 @@ function renderFooter() {
   return `<footer class="site-footer">
     <div class="footer-inner">
       <p class="footer-brand">${escapeHtml(SITE_NAME)}</p>
-      <p class="footer-copy">${escapeHtml(config.siteTagline || "お墓参り代行")}</p>
       <p class="footer-meta">岐阜県長良市長良丘1-2</p>
       <p class="footer-meta"><a href="tel:09034571149">090-3457-1149</a></p>
-      <p class="footer-links"><a href="./index.html">ブログ</a></p>
       <p class="footer-note">&copy; <span id="year"></span> ${escapeHtml(SITE_NAME)}. All rights reserved.</p>
     </div>
   </footer>`;
@@ -383,7 +381,16 @@ function clearGeneratedPosts(keepSlugs) {
 
 function copyFile(src, dest) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
-  fs.copyFileSync(src, dest);
+  try {
+    fs.copyFileSync(src, dest);
+  } catch (err) {
+    if (err.code === "EPERM" || err.code === "EACCES") {
+      const data = fs.readFileSync(src);
+      fs.writeFileSync(dest, data);
+      return;
+    }
+    throw err;
+  }
 }
 
 function copyDirHtml(srcDir, destDir) {
@@ -397,16 +404,37 @@ function copyDirHtml(srcDir, destDir) {
 /** Vercel は outputDirectory=public を配信する */
 function syncPublic() {
   const pub = path.join(ROOT, "public");
-  fs.rmSync(pub, { recursive: true, force: true });
-  fs.mkdirSync(pub, { recursive: true });
-
-  for (const file of ["index.html", "styles.css", "script.js", "robots.txt", "sitemap.xml"]) {
-    const src = path.join(ROOT, file);
-    if (fs.existsSync(src)) copyFile(src, path.join(pub, file));
+  try {
+    fs.rmSync(pub, { recursive: true, force: true });
+  } catch (err) {
+    console.warn(`Could not fully clear public/ (${err.code || err.message}). Overwriting instead.`);
   }
 
-  copyDirHtml(BLOG_DIR, path.join(pub, "blog"));
-  console.log("Synced site files to public/ for Vercel.");
+  try {
+    fs.mkdirSync(pub, { recursive: true });
+
+    for (const file of ["index.html", "styles.css", "script.js", "robots.txt", "sitemap.xml"]) {
+      const src = path.join(ROOT, file);
+      if (fs.existsSync(src)) copyFile(src, path.join(pub, file));
+    }
+
+    const blogOut = path.join(pub, "blog");
+    fs.mkdirSync(blogOut, { recursive: true });
+    for (const file of fs.readdirSync(blogOut)) {
+      if (!file.endsWith(".html")) continue;
+      try {
+        fs.unlinkSync(path.join(blogOut, file));
+      } catch {
+        /* ignore locked files */
+      }
+    }
+    copyDirHtml(BLOG_DIR, blogOut);
+    console.log("Synced site files to public/ for Vercel.");
+  } catch (err) {
+    console.warn(
+      `Skipped local public/ sync (${err.code || err.message}). Vercel build will regenerate public/.`
+    );
+  }
 }
 
 async function main() {
