@@ -19,51 +19,80 @@
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const posterHoldMs = 900;
     const startedAt = performance.now();
-    let started = false;
+    let revealTimer = 0;
     let revealed = false;
 
     const revealPoster = () => {
       if (revealed || reduceMotion.matches) return;
       revealed = true;
+      if (revealTimer) window.clearTimeout(revealTimer);
       heroMedia.classList.add("is-video-ready");
+      window.removeEventListener("touchstart", retryPlay, true);
+      window.removeEventListener("click", retryPlay, true);
+      window.removeEventListener("scroll", retryPlay, true);
     };
 
-    const startHeroVideo = () => {
-      if (started || reduceMotion.matches) return;
-      started = true;
+    const tryPlay = () => {
+      if (revealed || reduceMotion.matches) return false;
+      heroVideo.muted = true;
+      heroVideo.defaultMuted = true;
+      heroVideo.playsInline = true;
+      heroVideo.setAttribute("muted", "");
+      heroVideo.setAttribute("playsinline", "");
+      const playPromise = heroVideo.play();
+      if (playPromise && typeof playPromise.then === "function") {
+        playPromise.then(revealPoster).catch(() => {});
+        return true;
+      }
+      if (!heroVideo.paused) {
+        revealPoster();
+        return true;
+      }
+      return false;
+    };
+
+    const schedulePlay = () => {
+      if (revealed || reduceMotion.matches) return;
       const wait = Math.max(0, posterHoldMs - (performance.now() - startedAt));
-      window.setTimeout(() => {
-        if (reduceMotion.matches) return;
-        try {
-          heroVideo.currentTime = 0;
-        } catch {
-          /* ignore seek errors before ready */
-        }
-        const playPromise = heroVideo.play();
-        if (playPromise && typeof playPromise.then === "function") {
-          playPromise.then(revealPoster).catch(() => {});
-        } else {
-          revealPoster();
-        }
+      if (revealTimer) window.clearTimeout(revealTimer);
+      revealTimer = window.setTimeout(() => {
+        tryPlay();
       }, wait);
+    };
+
+    const retryPlay = () => {
+      tryPlay();
     };
 
     const syncHeroVideo = () => {
       if (reduceMotion.matches) {
         heroVideo.pause();
         heroMedia.classList.remove("is-video-ready");
-        started = false;
         revealed = false;
         return;
       }
+      schedulePlay();
       if (heroVideo.readyState >= 2) {
-        startHeroVideo();
+        tryPlay();
       }
     };
 
-    // 再生が始まってから静止画を外すと、黒飛びせず自然に見える
-    heroVideo.addEventListener("playing", revealPoster, { once: true });
-    heroVideo.addEventListener("canplay", startHeroVideo, { once: true });
+    // 再生開始後に静止画を外す（スマホは自動再生が遅れる／失敗することがある）
+    heroVideo.addEventListener("playing", revealPoster);
+    heroVideo.addEventListener("loadeddata", schedulePlay);
+    heroVideo.addEventListener("canplay", schedulePlay);
+    window.addEventListener("touchstart", retryPlay, { passive: true, capture: true });
+    window.addEventListener("click", retryPlay, { passive: true, capture: true });
+    window.addEventListener("scroll", retryPlay, { passive: true, capture: true });
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") tryPlay();
+    });
+
+    try {
+      heroVideo.load();
+    } catch {
+      /* ignore */
+    }
     syncHeroVideo();
     reduceMotion.addEventListener("change", syncHeroVideo);
   }
