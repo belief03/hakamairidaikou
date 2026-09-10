@@ -3,5 +3,5 @@
   "siteTagline": "お墓参り代行",
   "siteUrl": "https://hakamairidaikou.vercel.app",
   "locale": "ja_JP",
-  "microcmsEndpoint": "blogs"
+  "microcmsEndpoint": "blog"
 }
