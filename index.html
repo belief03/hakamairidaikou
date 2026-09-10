@@ -77,7 +77,11 @@
       </svg>
     </span>
     <div class="header-inner">
-      <a class="logo" href="#top">墓守の民</a>
+      <a class="logo" href="#top">
+        <span class="logo-ornament" aria-hidden="true"></span>
+        <span class="logo-text">墓守の民</span>
+        <span class="logo-ornament" aria-hidden="true"></span>
+      </a>
       <button class="nav-toggle" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="site-nav">
         <span></span><span></span>
       </button>
@@ -97,8 +101,8 @@
       <div class="hero-media" role="img" aria-label="柔らかな光が差し込む緑の風景"></div>
       <div class="hero-veil"></div>
       <div class="hero-content">
-        <h1>真心込めて、大切なご先祖様へ。</h1>
-        <p class="hero-lead">ご家族の想いを、誠心誠意繋ぎます。</p>
+        <h1><span class="hero-line">真心込めて、</span><span class="hero-line">大切なご先祖様へ。</span></h1>
+        <p class="hero-lead"><span class="hero-line">ご家族の想いを、</span><span class="hero-line">誠心誠意繋ぎます。</span></p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="#contact">お問合せ</a>
           <a class="btn btn-ghost" href="#service">サービスを見る</a>
@@ -150,10 +154,10 @@
       </div>
     </section>
 
-    <section class="section message reveal" id="message">
+    <section class="section message reveal" id="message" aria-label="代表メッセージ">
       <div class="section-inner message-inner">
         <p class="section-label">Message</p>
-        <h2>代表より</h2>
+        <h2>メッセージ</h2>
         <blockquote class="message-body">
           <p>
             昨今は墓じまいをする方が多く、後世に負担を残したくないという考えが増えてきました。
@@ -240,18 +244,18 @@
               <tbody>
                 <tr>
                   <th scope="row">基本お参り</th>
-                  <td>清掃・献花・線香・写真報告</td>
-                  <td>6,000円</td>
+                  <td data-label="内容">清掃・献花・線香・写真報告</td>
+                  <td data-label="料金（税込）">6,000円</td>
                 </tr>
                 <tr>
                   <th scope="row">定期プラン（月1回）</th>
-                  <td>基本お参りを毎月実施</td>
-                  <td>5,000円／回</td>
+                  <td data-label="内容">基本お参りを毎月実施</td>
+                  <td data-label="料金（税込）">5,000円／回</td>
                 </tr>
                 <tr>
                   <th scope="row">お彼岸・お盆</th>
-                  <td>季節の特別お参り</td>
-                  <td>10,000円</td>
+                  <td data-label="内容">季節の特別お参り</td>
+                  <td data-label="料金（税込）">10,000円</td>
                 </tr>
               </tbody>
             </table>

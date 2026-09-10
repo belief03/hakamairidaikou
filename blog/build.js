@@ -137,7 +137,11 @@ function renderHeader({ active } = {}) {
     <span class="header-leaf header-leaf--bl" aria-hidden="true">${leafSvg("rotate(-38 40 40)")}</span>
     <span class="header-leaf header-leaf--br" aria-hidden="true">${leafSvg("rotate(38 40 40)")}</span>
     <div class="header-inner">
-      <a class="logo" href="../index.html">${escapeHtml(SITE_NAME)}</a>
+      <a class="logo" href="../index.html">
+        <span class="logo-ornament" aria-hidden="true"></span>
+        <span class="logo-text">${escapeHtml(SITE_NAME)}</span>
+        <span class="logo-ornament" aria-hidden="true"></span>
+      </a>
       <button class="nav-toggle" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="site-nav">
         <span></span><span></span>
       </button>
