@@ -264,10 +264,7 @@ p {
   inset: 0;
   z-index: 0;
   overflow: hidden;
-  background:
-    #1c2620
-    url("https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=2000&q=80")
-      center / cover no-repeat;
+  background: #1c2620;
 }
 
 .hero-video {
@@ -277,12 +274,22 @@ p {
   height: 100%;
   object-fit: contain;
   object-position: center;
-  opacity: 0;
-  transition: opacity 1.6s var(--ease);
 }
 
-.hero-video.is-ready {
+.hero-poster {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    url("https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=2000&q=80")
+      center / cover no-repeat;
   opacity: 1;
+  transition: opacity 1.1s var(--ease);
+}
+
+.hero-media.is-video-ready .hero-poster {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .hero-veil {
@@ -1866,6 +1873,7 @@ p {
   }
 
   .hero-video,
+  .hero-poster,
   .hero h1,
   .hero-lead,
   .hero-actions,
@@ -1883,7 +1891,10 @@ p {
 
   .hero-video {
     display: none;
-    transition: none;
+  }
+
+  .hero-poster {
+    opacity: 1;
   }
 
   .hero-scroll-icon {

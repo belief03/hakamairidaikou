@@ -13,16 +13,24 @@
     year.textContent = String(new Date().getFullYear());
   }
 
+  const heroMedia = document.querySelector(".hero-media");
   const heroVideo = document.querySelector(".hero-video");
-  if (heroVideo) {
+  if (heroMedia && heroVideo) {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const posterHoldMs = 1600;
+    const posterHoldMs = 900;
     const startedAt = performance.now();
+    let started = false;
     let revealed = false;
 
-    const revealHeroVideo = () => {
+    const revealPoster = () => {
       if (revealed || reduceMotion.matches) return;
       revealed = true;
+      heroMedia.classList.add("is-video-ready");
+    };
+
+    const startHeroVideo = () => {
+      if (started || reduceMotion.matches) return;
+      started = true;
       const wait = Math.max(0, posterHoldMs - (performance.now() - startedAt));
       window.setTimeout(() => {
         if (reduceMotion.matches) return;
@@ -32,26 +40,30 @@
           /* ignore seek errors before ready */
         }
         const playPromise = heroVideo.play();
-        if (playPromise && typeof playPromise.catch === "function") {
-          playPromise.catch(() => {});
+        if (playPromise && typeof playPromise.then === "function") {
+          playPromise.then(revealPoster).catch(() => {});
+        } else {
+          revealPoster();
         }
-        heroVideo.classList.add("is-ready");
       }, wait);
     };
 
     const syncHeroVideo = () => {
       if (reduceMotion.matches) {
         heroVideo.pause();
-        heroVideo.classList.remove("is-ready");
+        heroMedia.classList.remove("is-video-ready");
+        started = false;
         revealed = false;
         return;
       }
       if (heroVideo.readyState >= 2) {
-        revealHeroVideo();
+        startHeroVideo();
       }
     };
 
-    heroVideo.addEventListener("canplay", revealHeroVideo, { once: true });
+    // 再生が始まってから静止画を外すと、黒飛びせず自然に見える
+    heroVideo.addEventListener("playing", revealPoster, { once: true });
+    heroVideo.addEventListener("canplay", startHeroVideo, { once: true });
     syncHeroVideo();
     reduceMotion.addEventListener("change", syncHeroVideo);
   }
