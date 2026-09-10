@@ -16,16 +16,42 @@
   const heroVideo = document.querySelector(".hero-video");
   if (heroVideo) {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const posterHoldMs = 1600;
+    const startedAt = performance.now();
+    let revealed = false;
+
+    const revealHeroVideo = () => {
+      if (revealed || reduceMotion.matches) return;
+      revealed = true;
+      const wait = Math.max(0, posterHoldMs - (performance.now() - startedAt));
+      window.setTimeout(() => {
+        if (reduceMotion.matches) return;
+        try {
+          heroVideo.currentTime = 0;
+        } catch {
+          /* ignore seek errors before ready */
+        }
+        const playPromise = heroVideo.play();
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch(() => {});
+        }
+        heroVideo.classList.add("is-ready");
+      }, wait);
+    };
+
     const syncHeroVideo = () => {
       if (reduceMotion.matches) {
         heroVideo.pause();
+        heroVideo.classList.remove("is-ready");
+        revealed = false;
         return;
       }
-      const playPromise = heroVideo.play();
-      if (playPromise && typeof playPromise.catch === "function") {
-        playPromise.catch(() => {});
+      if (heroVideo.readyState >= 2) {
+        revealHeroVideo();
       }
     };
+
+    heroVideo.addEventListener("canplay", revealHeroVideo, { once: true });
     syncHeroVideo();
     reduceMotion.addEventListener("change", syncHeroVideo);
   }
