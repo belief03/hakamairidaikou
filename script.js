@@ -17,19 +17,28 @@
   const heroVideo = document.querySelector(".hero-video");
   if (heroMedia && heroVideo) {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const posterHoldMs = 900;
+    const posterHoldMs = 2400;
     const startedAt = performance.now();
+    let playTimer = 0;
     let revealTimer = 0;
     let revealed = false;
+    let isPlaying = false;
 
     const revealPoster = () => {
-      if (revealed || reduceMotion.matches) return;
+      if (revealed || reduceMotion.matches || !isPlaying) return;
       revealed = true;
       if (revealTimer) window.clearTimeout(revealTimer);
       heroMedia.classList.add("is-video-ready");
       window.removeEventListener("touchstart", retryPlay, true);
       window.removeEventListener("click", retryPlay, true);
       window.removeEventListener("scroll", retryPlay, true);
+    };
+
+    const scheduleReveal = () => {
+      if (revealed || reduceMotion.matches || !isPlaying) return;
+      const wait = Math.max(0, posterHoldMs - (performance.now() - startedAt));
+      if (revealTimer) window.clearTimeout(revealTimer);
+      revealTimer = window.setTimeout(revealPoster, wait);
     };
 
     const tryPlay = () => {
@@ -41,11 +50,17 @@
       heroVideo.setAttribute("playsinline", "");
       const playPromise = heroVideo.play();
       if (playPromise && typeof playPromise.then === "function") {
-        playPromise.then(revealPoster).catch(() => {});
+        playPromise
+          .then(() => {
+            isPlaying = true;
+            scheduleReveal();
+          })
+          .catch(() => {});
         return true;
       }
       if (!heroVideo.paused) {
-        revealPoster();
+        isPlaying = true;
+        scheduleReveal();
         return true;
       }
       return false;
@@ -53,11 +68,9 @@
 
     const schedulePlay = () => {
       if (revealed || reduceMotion.matches) return;
-      const wait = Math.max(0, posterHoldMs - (performance.now() - startedAt));
-      if (revealTimer) window.clearTimeout(revealTimer);
-      revealTimer = window.setTimeout(() => {
-        tryPlay();
-      }, wait);
+      if (playTimer) window.clearTimeout(playTimer);
+      // 裏で早めに再生開始し、静止画は posterHoldMs まで残す
+      playTimer = window.setTimeout(tryPlay, 120);
     };
 
     const retryPlay = () => {
@@ -69,16 +82,17 @@
         heroVideo.pause();
         heroMedia.classList.remove("is-video-ready");
         revealed = false;
+        isPlaying = false;
         return;
       }
       schedulePlay();
-      if (heroVideo.readyState >= 2) {
-        tryPlay();
-      }
     };
 
-    // 再生開始後に静止画を外す（スマホは自動再生が遅れる／失敗することがある）
-    heroVideo.addEventListener("playing", revealPoster);
+    // 再生はすぐ開始しつつ、静止画フェードは最短 2.4 秒後
+    heroVideo.addEventListener("playing", () => {
+      isPlaying = true;
+      scheduleReveal();
+    });
     heroVideo.addEventListener("loadeddata", schedulePlay);
     heroVideo.addEventListener("canplay", schedulePlay);
     window.addEventListener("touchstart", retryPlay, { passive: true, capture: true });
