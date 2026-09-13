@@ -4,8 +4,18 @@
 
 ## 1. microCMS（作成済み想定）
 
-- API: リスト形式 / エンドポイント名 `blogs`
-- フィールド: `title` / `slug` / `description` / `body`
+- API: リスト形式 / エンドポイント名 `blog`（`site.config.json` の `microcmsEndpoint`）
+- フィールド:
+
+| フィールドID | 表示名 | 種類 | 必須 |
+|---|---|---|---|
+| `title` | タイトル | テキスト | ON |
+| `slug` | URL用スラッグ | テキスト | ON |
+| `description` | 説明文 | テキスト | ON |
+| `body` | 本文 | リッチエディタ | ON |
+| `eyecatch` | アイキャッチ画像 | **画像** | OFF（おすすめ） |
+
+`eyecatch` があると、ブログ一覧のサムネ（記事へのリンク付き）・記事上部・OGP画像に使われます。未設定でも投稿でき、一覧にはプレースホルダーが表示されます。
 
 ## 2. Vercel 環境変数
 

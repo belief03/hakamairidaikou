@@ -62,9 +62,26 @@ function slugify(raw) {
     .replace(/^-|-$/g, "");
 }
 
+function extractImage(field) {
+  if (!field) return null;
+  if (typeof field === "string") {
+    const url = field.trim();
+    return url ? { url, width: null, height: null } : null;
+  }
+  if (typeof field === "object" && field.url) {
+    return {
+      url: String(field.url).trim(),
+      width: field.width || null,
+      height: field.height || null,
+    };
+  }
+  return null;
+}
+
 function normalizePost(raw) {
   const slug = slugify(raw.slug || raw.id);
   if (!slug) return null;
+  const eyecatch = extractImage(raw.eyecatch || raw.thumbnail || raw.image);
   return {
     id: raw.id || slug,
     title: String(raw.title || "").trim() || "無題",
@@ -72,6 +89,7 @@ function normalizePost(raw) {
     description: String(raw.description || "").trim(),
     body: String(raw.body || ""),
     publishedAt: toIsoDate(raw.publishedAt || raw.createdAt || Date.now()),
+    eyecatch,
   };
 }
 
@@ -168,7 +186,7 @@ function renderFooter() {
   </footer>`;
 }
 
-function headCommon({ title, description, canonicalPath, type, jsonLd }) {
+function headCommon({ title, description, canonicalPath, type, jsonLd, imageUrl }) {
   const fullTitle = title.includes(SITE_NAME) ? title : `${title}｜${SITE_NAME}`;
   const desc = description || `${SITE_NAME}のお墓参り代行に関する情報をお届けします。`;
   const canonical = absoluteUrl(canonicalPath);
@@ -178,6 +196,11 @@ function headCommon({ title, description, canonicalPath, type, jsonLd }) {
     : "";
   const ogUrlTag = SITE_URL
     ? `<meta property="og:url" content="${escapeAttr(ogUrl)}" />`
+    : "";
+  const ogImageTag = imageUrl
+    ? `<meta property="og:image" content="${escapeAttr(imageUrl)}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="${escapeAttr(imageUrl)}" />`
     : "";
 
   return `<meta charset="UTF-8" />
@@ -191,11 +214,25 @@ function headCommon({ title, description, canonicalPath, type, jsonLd }) {
   <meta property="og:site_name" content="${escapeAttr(SITE_NAME)}" />
   <meta property="og:locale" content="${escapeAttr(config.locale || "ja_JP")}" />
   ${ogUrlTag}
+  ${ogImageTag}
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../styles.css" />
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`;
+}
+
+function renderThumbMarkup(post, { className = "blog-item-thumb", eager = false } = {}) {
+  const img = post.eyecatch;
+  if (img && img.url) {
+    const w = img.width ? ` width="${escapeAttr(img.width)}"` : "";
+    const h = img.height ? ` height="${escapeAttr(img.height)}"` : "";
+    const loading = eager ? ' loading="eager"' : ' loading="lazy"';
+    return `<span class="${escapeAttr(className)}">
+            <img src="${escapeAttr(img.url)}" alt="${escapeAttr(post.title)}"${w}${h}${loading} decoding="async" />
+          </span>`;
+  }
+  return `<span class="${escapeAttr(className)} ${escapeAttr(className)}--empty" aria-hidden="true"></span>`;
 }
 
 function renderListPage(posts) {
@@ -212,6 +249,7 @@ function renderListPage(posts) {
       description: p.description,
       datePublished: p.publishedAt,
       url: absoluteUrl(`/blog/${p.slug}.html`) || undefined,
+      image: p.eyecatch?.url || undefined,
     })),
   };
 
@@ -220,9 +258,12 @@ function renderListPage(posts) {
         .map(
           (p) => `<li>
           <a class="blog-item" href="./${escapeAttr(p.slug)}.html">
-            <time class="blog-item-date" datetime="${escapeAttr(p.publishedAt)}">${escapeHtml(formatDateJa(p.publishedAt))}</time>
-            <span class="blog-item-title">${escapeHtml(p.title)}</span>
-            <span class="blog-item-lead">${escapeHtml(p.description)}</span>
+            ${renderThumbMarkup(p)}
+            <span class="blog-item-body">
+              <time class="blog-item-date" datetime="${escapeAttr(p.publishedAt)}">${escapeHtml(formatDateJa(p.publishedAt))}</time>
+              <span class="blog-item-title">${escapeHtml(p.title)}</span>
+              <span class="blog-item-lead">${escapeHtml(p.description)}</span>
+            </span>
           </a>
         </li>`
         )
@@ -267,6 +308,7 @@ function renderListPage(posts) {
 
 function renderPostPage(post, allPosts) {
   const pageUrl = absoluteUrl(`/blog/${post.slug}.html`);
+  const imageUrl = post.eyecatch?.url || undefined;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -275,6 +317,7 @@ function renderPostPage(post, allPosts) {
     datePublished: post.publishedAt,
     dateModified: post.publishedAt,
     mainEntityOfPage: pageUrl || undefined,
+    image: imageUrl,
     author: {
       "@type": "Organization",
       name: SITE_NAME,
@@ -290,9 +333,24 @@ function renderPostPage(post, allPosts) {
     .slice(0, 3)
     .map(
       (p) =>
-        `<li><a href="./${escapeAttr(p.slug)}.html">${escapeHtml(p.title)}</a></li>`
+        `<li>
+            <a class="blog-related-item" href="./${escapeAttr(p.slug)}.html">
+              ${renderThumbMarkup(p, { className: "blog-related-thumb" })}
+              <span class="blog-related-title">${escapeHtml(p.title)}</span>
+            </a>
+          </li>`
     )
     .join("");
+
+  const eyecatchBlock = post.eyecatch?.url
+    ? `<div class="blog-article-eyecatch">
+          <img src="${escapeAttr(post.eyecatch.url)}" alt="${escapeAttr(post.title)}"${
+            post.eyecatch.width ? ` width="${escapeAttr(post.eyecatch.width)}"` : ""
+          }${
+            post.eyecatch.height ? ` height="${escapeAttr(post.eyecatch.height)}"` : ""
+          } loading="eager" decoding="async" />
+        </div>`
+    : "";
 
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -303,6 +361,7 @@ function renderPostPage(post, allPosts) {
     canonicalPath: `/blog/${post.slug}.html`,
     type: "article",
     jsonLd,
+    imageUrl,
   })}
   <meta property="article:published_time" content="${escapeAttr(post.publishedAt)}" />
 </head>
@@ -316,6 +375,7 @@ function renderPostPage(post, allPosts) {
           <time datetime="${escapeAttr(post.publishedAt)}">${escapeHtml(formatDateJa(post.publishedAt))}</time>
         </p>
         <h1>${escapeHtml(post.title)}</h1>
+        ${eyecatchBlock}
         <div class="blog-article-body">
           ${post.body}
         </div>
