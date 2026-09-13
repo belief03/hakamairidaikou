@@ -81,7 +81,7 @@ function extractImage(field) {
 function normalizePost(raw) {
   const slug = slugify(raw.slug || raw.id);
   if (!slug) return null;
-  const eyecatch = extractImage(raw.eyecatch || raw.thumbnail || raw.image);
+  const eyecatch = extractImage(raw.blogs || raw.eyecatch || raw.thumbnail || raw.image);
   return {
     id: raw.id || slug,
     title: String(raw.title || "").trim() || "無題",
