@@ -229,6 +229,16 @@ function renderListLead(post) {
   return `<span class="blog-item-lead">${escapeHtml(post.description)}</span>`;
 }
 
+function renderListThumb(post) {
+  const img = post.eyecatch;
+  if (!img?.url) return "";
+  const w = img.width ? ` width="${escapeAttr(img.width)}"` : "";
+  const h = img.height ? ` height="${escapeAttr(img.height)}"` : "";
+  return `<span class="blog-item-thumb">
+            <img src="${escapeAttr(img.url)}" alt=""${w}${h} loading="lazy" decoding="async" />
+          </span>`;
+}
+
 function renderListPage(posts) {
   const listUrl = absoluteUrl("/blog/");
   const jsonLd = {
@@ -249,15 +259,24 @@ function renderListPage(posts) {
 
   const items = posts.length
     ? posts
-        .map(
-          (p) => `<li>
-          <a class="blog-item" href="./${escapeAttr(p.slug)}.html">
-            <time class="blog-item-date" datetime="${escapeAttr(p.publishedAt)}">${escapeHtml(formatDateJa(p.publishedAt))}</time>
+        .map((p) => {
+          const thumb = renderListThumb(p);
+          const withThumb = Boolean(thumb);
+          const body = withThumb
+            ? `<span class="blog-item-body">
+              <time class="blog-item-date" datetime="${escapeAttr(p.publishedAt)}">${escapeHtml(formatDateJa(p.publishedAt))}</time>
+              <span class="blog-item-title">${escapeHtml(p.title)}</span>
+              ${renderListLead(p)}
+            </span>`
+            : `<time class="blog-item-date" datetime="${escapeAttr(p.publishedAt)}">${escapeHtml(formatDateJa(p.publishedAt))}</time>
             <span class="blog-item-title">${escapeHtml(p.title)}</span>
-            ${renderListLead(p)}
+            ${renderListLead(p)}`;
+          return `<li>
+          <a class="blog-item${withThumb ? " blog-item--with-thumb" : ""}" href="./${escapeAttr(p.slug)}.html">
+            ${thumb}${body}
           </a>
-        </li>`
-        )
+        </li>`;
+        })
         .join("\n        ")
     : `<li class="blog-empty">記事はまだありません。microCMS で公開すると、ここに表示されます。</li>`;
 
