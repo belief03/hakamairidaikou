@@ -222,17 +222,11 @@ function headCommon({ title, description, canonicalPath, type, jsonLd, imageUrl 
   <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`;
 }
 
-function renderThumbMarkup(post, { className = "blog-item-thumb", eager = false } = {}) {
-  const img = post.eyecatch;
-  if (img && img.url) {
-    const w = img.width ? ` width="${escapeAttr(img.width)}"` : "";
-    const h = img.height ? ` height="${escapeAttr(img.height)}"` : "";
-    const loading = eager ? ' loading="eager"' : ' loading="lazy"';
-    return `<span class="${escapeAttr(className)}">
-            <img src="${escapeAttr(img.url)}" alt="${escapeAttr(post.title)}"${w}${h}${loading} decoding="async" />
-          </span>`;
-  }
-  return `<span class="${escapeAttr(className)} ${escapeAttr(className)}--empty" aria-hidden="true"></span>`;
+function renderListLead(post) {
+  const title = (post.title || "").replace(/\s+/g, "");
+  const desc = (post.description || "").replace(/\s+/g, "");
+  if (!desc || desc === title) return "";
+  return `<span class="blog-item-lead">${escapeHtml(post.description)}</span>`;
 }
 
 function renderListPage(posts) {
@@ -258,12 +252,9 @@ function renderListPage(posts) {
         .map(
           (p) => `<li>
           <a class="blog-item" href="./${escapeAttr(p.slug)}.html">
-            ${renderThumbMarkup(p)}
-            <span class="blog-item-body">
-              <time class="blog-item-date" datetime="${escapeAttr(p.publishedAt)}">${escapeHtml(formatDateJa(p.publishedAt))}</time>
-              <span class="blog-item-title">${escapeHtml(p.title)}</span>
-              <span class="blog-item-lead">${escapeHtml(p.description)}</span>
-            </span>
+            <time class="blog-item-date" datetime="${escapeAttr(p.publishedAt)}">${escapeHtml(formatDateJa(p.publishedAt))}</time>
+            <span class="blog-item-title">${escapeHtml(p.title)}</span>
+            ${renderListLead(p)}
           </a>
         </li>`
         )
@@ -334,10 +325,7 @@ function renderPostPage(post, allPosts) {
     .map(
       (p) =>
         `<li>
-            <a class="blog-related-item" href="./${escapeAttr(p.slug)}.html">
-              ${renderThumbMarkup(p, { className: "blog-related-thumb" })}
-              <span class="blog-related-title">${escapeHtml(p.title)}</span>
-            </a>
+            <a href="./${escapeAttr(p.slug)}.html">${escapeHtml(p.title)}</a>
           </li>`
     )
     .join("");
