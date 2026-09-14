@@ -168,8 +168,8 @@ function renderHeader({ active } = {}) {
         <a href="../index.html#message"><span class="nav-num">02</span>メッセージ</a>
         <a href="../index.html#service"><span class="nav-num">03</span>サービス</a>
         <a href="../index.html#price"><span class="nav-num">04</span>料金</a>
-        <a href="../index.html#contact"><span class="nav-num">05</span>お問合せ</a>
-        <a href="./index.html"${blogClass}><span class="nav-num">06</span>ブログ</a>
+        <a href="./index.html"${blogClass}><span class="nav-num">05</span>ブログ</a>
+        <a href="../index.html#contact"><span class="nav-num">06</span>お問合せ</a>
       </nav>
     </div>
   </header>`;
@@ -239,6 +239,48 @@ function renderListThumb(post) {
           </span>`;
 }
 
+function renderBlogCard(post, { hrefPrefix = "./" } = {}) {
+  const thumb = renderListThumb(post);
+  const withThumb = Boolean(thumb);
+  const href = `${hrefPrefix}${escapeAttr(post.slug)}.html`;
+  const body = withThumb
+    ? `<span class="blog-item-body">
+              <time class="blog-item-date" datetime="${escapeAttr(post.publishedAt)}">${escapeHtml(formatDateJa(post.publishedAt))}</time>
+              <span class="blog-item-title">${escapeHtml(post.title)}</span>
+              ${renderListLead(post)}
+            </span>`
+    : `<time class="blog-item-date" datetime="${escapeAttr(post.publishedAt)}">${escapeHtml(formatDateJa(post.publishedAt))}</time>
+            <span class="blog-item-title">${escapeHtml(post.title)}</span>
+            ${renderListLead(post)}`;
+  return `<li>
+          <a class="blog-item${withThumb ? " blog-item--with-thumb" : ""}" href="${href}">
+            ${thumb}${body}
+          </a>
+        </li>`;
+}
+
+function injectHomeBlog(posts) {
+  const indexPath = path.join(ROOT, "index.html");
+  if (!fs.existsSync(indexPath)) {
+    console.warn("index.html not found; skipped home blog injection.");
+    return;
+  }
+  const html = fs.readFileSync(indexPath, "utf8");
+  const latest = posts.slice(0, 3);
+  const items = latest.length
+    ? latest.map((p) => renderBlogCard(p, { hrefPrefix: "blog/" })).join("\n        ")
+    : `<li class="blog-empty">記事は準備中です。</li>`;
+  const next = html.replace(
+    /<!--HOME_BLOG_ITEMS_START-->[\s\S]*?<!--HOME_BLOG_ITEMS_END-->/,
+    `<!--HOME_BLOG_ITEMS_START-->\n        ${items}\n        <!--HOME_BLOG_ITEMS_END-->`
+  );
+  if (next === html) {
+    console.warn("HOME_BLOG_ITEMS markers not found in index.html");
+    return;
+  }
+  fs.writeFileSync(indexPath, next, "utf8");
+}
+
 function renderListPage(posts) {
   const listUrl = absoluteUrl("/blog/");
   const jsonLd = {
@@ -258,26 +300,7 @@ function renderListPage(posts) {
   };
 
   const items = posts.length
-    ? posts
-        .map((p) => {
-          const thumb = renderListThumb(p);
-          const withThumb = Boolean(thumb);
-          const body = withThumb
-            ? `<span class="blog-item-body">
-              <time class="blog-item-date" datetime="${escapeAttr(p.publishedAt)}">${escapeHtml(formatDateJa(p.publishedAt))}</time>
-              <span class="blog-item-title">${escapeHtml(p.title)}</span>
-              ${renderListLead(p)}
-            </span>`
-            : `<time class="blog-item-date" datetime="${escapeAttr(p.publishedAt)}">${escapeHtml(formatDateJa(p.publishedAt))}</time>
-            <span class="blog-item-title">${escapeHtml(p.title)}</span>
-            ${renderListLead(p)}`;
-          return `<li>
-          <a class="blog-item${withThumb ? " blog-item--with-thumb" : ""}" href="./${escapeAttr(p.slug)}.html">
-            ${thumb}${body}
-          </a>
-        </li>`;
-        })
-        .join("\n        ")
+    ? posts.map((p) => renderBlogCard(p, { hrefPrefix: "./" })).join("\n        ")
     : `<li class="blog-empty">記事はまだありません。microCMS で公開すると、ここに表示されます。</li>`;
 
   return `<!DOCTYPE html>
@@ -541,6 +564,8 @@ async function main() {
       "utf8"
     );
   }
+
+  injectHomeBlog(posts);
 
   fs.writeFileSync(path.join(ROOT, "sitemap.xml"), renderSitemap(posts), "utf8");
 
