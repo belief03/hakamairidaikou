@@ -2,7 +2,7 @@
   "name": "hakamairidaikou",
   "private": true,
   "version": "1.0.0",
-  "description": "墓守の民｜お墓参り代行サイト",
+  "description": "墓守の民｜お墓清掃・お参り代行サイト",
   "scripts": {
     "build": "node blog/build.js",
     "build:blog": "node blog/build.js"

@@ -296,6 +296,7 @@ p {
 }
 
 .hero h1,
+.hero-eyebrow,
 .hero-lead,
 .hero-actions {
   opacity: 0;
@@ -303,12 +304,22 @@ p {
   animation: rise-in 0.95s var(--ease) forwards;
 }
 
+.hero-eyebrow {
+  margin: 0 0 0.85rem;
+  font-family: var(--font-display);
+  font-size: clamp(0.92rem, 1.8vw, 1.08rem);
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.92);
+  animation-delay: 0.08s;
+}
+
 .hero h1 {
   max-width: 100%;
-  font-size: clamp(1.35rem, 3.6vw, 2.35rem);
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  line-height: 1.55;
+  font-size: clamp(1.55rem, 4.2vw, 2.65rem);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.5;
+  padding-inline-end: 0.12em;
   color: #fff;
   animation-delay: 0.2s;
 }
@@ -761,10 +772,10 @@ p {
 }
 
 .offer-banner {
-  margin-top: 4.5rem;
+  margin-top: 0;
   display: grid;
   justify-items: start;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .offer-lead {
@@ -778,7 +789,7 @@ p {
 }
 
 .offer-label {
-  margin: 0.35rem 0 0;
+  margin: 0;
   color: var(--accent);
   font-size: 0.78rem;
   letter-spacing: 0.18em;
@@ -832,8 +843,195 @@ p {
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
 }
 
+.perk-grid {
+  margin-top: 3.5rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2rem 2.5rem;
+  align-items: center;
+}
+
+.guitar-perk {
+  padding: 1.6rem 1.5rem;
+  border: 1px solid rgba(176, 64, 64, 0.22);
+  border-left: 4px solid #b04040;
+  background:
+    linear-gradient(135deg, rgba(176, 64, 64, 0.06), transparent 55%),
+    rgba(255, 255, 255, 0.48);
+  border-radius: 4px;
+}
+
+.guitar-perk-label {
+  margin: 0;
+  color: #b04040;
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+}
+
+.guitar-perk-title {
+  margin-top: 0.55rem;
+  font-size: clamp(1.08rem, 2vw, 1.28rem);
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+
+.guitar-perk-text {
+  margin-top: 0.7rem;
+  color: var(--ink-muted);
+  font-size: 0.96rem;
+  line-height: 1.85;
+}
+
 .price {
   background: var(--bg-tone-b);
+}
+
+.price-board {
+  margin-top: 2.5rem;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 1.35rem;
+  align-items: stretch;
+}
+
+.price-card {
+  display: grid;
+  align-content: start;
+  gap: 0.55rem;
+  padding: 1.75rem 1.5rem 1.85rem;
+  border: 1px solid rgba(79, 107, 90, 0.18);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.price-card--main {
+  background:
+    linear-gradient(180deg, rgba(79, 107, 90, 0.08), transparent 42%),
+    rgba(255, 255, 255, 0.72);
+  border-color: rgba(79, 107, 90, 0.28);
+}
+
+.price-card-label {
+  margin: 0;
+  color: var(--accent);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+}
+
+.price-card-title {
+  font-size: 1.22rem;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+}
+
+.price-card-amount {
+  margin-top: 0.35rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.2rem;
+  color: #b04040;
+  line-height: 1;
+}
+
+.price-card-yen {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4vw, 2.85rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.price-card-unit {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.08em;
+}
+
+.price-card-note {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.88rem;
+  letter-spacing: 0.06em;
+}
+
+.price-include {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.price-include li {
+  position: relative;
+  padding-left: 1.15rem;
+  color: var(--ink);
+  font-size: 0.96rem;
+  letter-spacing: 0.04em;
+  line-height: 1.55;
+}
+
+.price-include li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.price-card-bonus {
+  margin-top: 1.1rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 4px;
+  background: rgba(176, 64, 64, 0.08);
+  color: #9a3535;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+.option-list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.option-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.95rem 0;
+  border-bottom: 1px solid rgba(200, 211, 203, 0.85);
+}
+
+.option-list li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.price-card .price-note {
+  margin-top: 1rem;
+}
+
+.price-cta-note {
+  margin: 2.25rem 0 0;
+  text-align: center;
+  color: var(--ink-muted);
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  letter-spacing: 0.06em;
+}
+
+.price-actions {
+  margin-top: 1.15rem;
+  display: flex;
+  justify-content: center;
 }
 
 .contact {
@@ -844,16 +1042,24 @@ p {
 .contact-stack {
   display: grid;
   gap: 2.5rem;
-  max-width: 46rem;
+  max-width: 52rem;
 }
 
 .contact-stack .section-lead {
   max-width: none;
 }
 
+.contact-board {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.phone-card,
 .line-card {
   display: grid;
   justify-items: start;
+  align-content: start;
   gap: 0.85rem;
   padding: 2rem 1.75rem;
   background: rgba(255, 255, 255, 0.55);
@@ -861,6 +1067,7 @@ p {
   border-radius: 4px;
 }
 
+.phone-account,
 .line-account {
   margin: 0;
   font-size: 0.82rem;
@@ -868,21 +1075,24 @@ p {
   color: var(--accent);
 }
 
+.phone-account span,
 .line-account span {
   display: block;
   margin-top: 0.4rem;
   font-family: var(--font-display);
-  font-size: 1.45rem;
-  letter-spacing: 0.12em;
+  font-size: clamp(1.35rem, 2.6vw, 1.45rem);
+  letter-spacing: 0.08em;
   color: var(--ink);
 }
 
+.phone-lead,
 .line-lead {
   margin: 0;
   color: var(--ink-muted);
   letter-spacing: 0.04em;
 }
 
+.phone-btn,
 .line-btn {
   display: inline-flex;
   align-items: center;
@@ -892,13 +1102,27 @@ p {
   padding: 0.75rem 1.4rem;
   margin-top: 0.35rem;
   border-radius: 4px;
-  background: #06c755;
-  color: #fff;
   font-family: var(--font-body);
   font-size: 0.98rem;
   letter-spacing: 0.08em;
   text-decoration: none;
   transition: background 0.3s var(--ease), transform 0.3s var(--ease);
+}
+
+.phone-btn {
+  background: var(--accent);
+  color: #fff;
+}
+
+.phone-btn:hover {
+  background: var(--accent-deep);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.line-btn {
+  background: #06c755;
+  color: #fff;
 }
 
 .line-btn:hover {
@@ -1099,6 +1323,20 @@ p {
     grid-template-columns: 1fr;
   }
 
+  .perk-grid {
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: 1.5rem;
+  }
+
+  .price-board {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-board {
+    grid-template-columns: 1fr;
+  }
+
   .message {
     padding-top: 5.5rem;
     padding-bottom: 5.5rem;
@@ -1196,9 +1434,9 @@ p {
 
   .hero {
     width: 100%;
-    min-height: 42svh;
-    height: 46svh;
-    max-height: 46svh;
+    min-height: max(52svh, calc(var(--header-h) + 22rem));
+    height: auto;
+    max-height: none;
     aspect-ratio: auto;
     align-items: end;
   }
@@ -1221,12 +1459,20 @@ p {
     text-align: left;
   }
 
+  .hero-eyebrow {
+    margin-bottom: 0.55rem;
+    font-size: 0.86rem;
+    letter-spacing: 0.08em;
+    text-shadow: 0 1px 10px rgba(20, 28, 24, 0.3);
+  }
+
   .hero h1 {
     max-width: none;
     margin-inline: 0;
-    font-size: clamp(1.22rem, 5vw, 1.45rem);
-    letter-spacing: 0.05em;
+    font-size: clamp(1.35rem, 6vw, 1.7rem);
+    letter-spacing: 0.08em;
     line-height: 1.5;
+    padding-inline-end: 0.08em;
     text-shadow: 0 1px 12px rgba(20, 28, 24, 0.35);
   }
 
@@ -1249,7 +1495,7 @@ p {
     width: auto;
     max-width: none;
     margin-inline: 0;
-    margin-top: 3.75rem;
+    margin-top: 1.35rem;
     justify-content: flex-start;
     gap: 0.55rem;
   }
@@ -1522,10 +1768,63 @@ p {
   }
 
   .offer-banner {
-    margin-top: 2.75rem;
+    margin-top: 0;
     justify-items: center;
     text-align: center;
     gap: 0.75rem;
+  }
+
+  .perk-grid {
+    margin-top: 2.75rem;
+    justify-items: stretch;
+  }
+
+  .guitar-perk {
+    padding: 1.35rem 1.2rem;
+  }
+
+  .guitar-perk-title {
+    font-size: 1.05rem;
+  }
+
+  .guitar-perk-text {
+    font-size: 0.9rem;
+  }
+
+  .price-board {
+    margin-top: 1.75rem;
+    gap: 1rem;
+  }
+
+  .price-card {
+    padding: 1.45rem 1.2rem 1.55rem;
+  }
+
+  .price-card-title {
+    font-size: 1.1rem;
+  }
+
+  .price-card-yen {
+    font-size: 2.35rem;
+  }
+
+  .price-include {
+    gap: 0.45rem;
+  }
+
+  .price-include li {
+    font-size: 0.92rem;
+  }
+
+  .price-cta-note {
+    margin-top: 1.75rem;
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  .price-actions .btn {
+    width: 100%;
+    max-width: 22rem;
   }
 
   .offer-lead {
@@ -1536,7 +1835,7 @@ p {
   }
 
   .offer-label {
-    margin-top: 0.15rem;
+    margin-top: 0;
     font-size: 0.7rem;
     letter-spacing: 0.16em;
   }
@@ -1565,11 +1864,17 @@ p {
     gap: 1.75rem;
   }
 
+  .contact-board {
+    gap: 1rem;
+  }
+
+  .phone-card,
   .line-card {
     padding: 1.5rem 1.35rem;
     justify-items: stretch;
   }
 
+  .phone-btn,
   .line-btn {
     width: 100%;
   }
@@ -1586,9 +1891,9 @@ p {
   }
 
   .hero {
-    height: 44svh;
-    max-height: 44svh;
-    min-height: 40svh;
+    min-height: max(50svh, calc(var(--header-h) + 20.5rem));
+    height: auto;
+    max-height: none;
     aspect-ratio: auto;
   }
 
@@ -1598,6 +1903,8 @@ p {
 
   .hero h1 {
     font-size: 1.2rem;
+    line-height: 1.5;
+    padding-inline-end: 0.08em;
   }
 
   .hero-lead {
@@ -2084,6 +2391,7 @@ p {
 
   .hero-video,
   .hero h1,
+  .hero-eyebrow,
   .hero-lead,
   .hero-actions,
   .hero-scroll,

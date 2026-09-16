@@ -164,7 +164,7 @@ function renderHeader({ active } = {}) {
         <span></span><span></span>
       </button>
       <nav class="site-nav" id="site-nav" aria-label="メインメニュー">
-        <a href="../index.html#about"><span class="nav-num">01</span>お墓参り代行とは</a>
+        <a href="../index.html#about"><span class="nav-num">01</span>墓守の民とは</a>
         <a href="../index.html#message"><span class="nav-num">02</span>メッセージ</a>
         <a href="../index.html#service"><span class="nav-num">03</span>サービス</a>
         <a href="../index.html#price"><span class="nav-num">04</span>料金</a>
@@ -179,7 +179,7 @@ function renderFooter() {
   return `<footer class="site-footer">
     <div class="footer-inner">
       <p class="footer-brand">${escapeHtml(SITE_NAME)}</p>
-      <p class="footer-meta">岐阜県長良市長良丘1-2</p>
+      <p class="footer-meta">〒502-0838 岐阜県岐阜市長良丘1-2</p>
       <p class="footer-meta"><a href="tel:09034571149">090-3457-1149</a></p>
       <p class="footer-note">&copy; <span id="year"></span> ${escapeHtml(SITE_NAME)}. All rights reserved.</p>
     </div>
