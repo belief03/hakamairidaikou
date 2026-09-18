@@ -172,4 +172,5 @@
     serviceItems.forEach((item) => item.classList.add("is-visible"));
     revealItems.forEach((item) => item.classList.add("is-visible"));
   }
+
 })();
