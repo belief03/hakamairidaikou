@@ -130,35 +130,12 @@ function loadFixtures() {
   return raw;
 }
 
-function leafSvg(transform) {
-  return `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" fill="none">
-        <g transform="${transform}">
-          <path d="M40 72V22" stroke="#d5e4c4" stroke-width="2" stroke-linecap="round"/>
-          <path d="M40 58c-9 .5-17 5-21 12 7 1.5 15-.5 21-4z" fill="#8fbc6a"/>
-          <path d="M40 58c9 .5 17 5 21 12-7 1.5-15-.5-21-4z" fill="#6f9a52"/>
-          <path d="M40 46c-10-1-18 3-23 11 8 2.5 16 .5 23-4z" fill="#9cc876"/>
-          <path d="M40 46c10-1 18 3 23 11-8 2.5-16 .5-23-4z" fill="#7eab5e"/>
-          <path d="M40 34c-9-2.5-16 1-20 8 6 3.5 13 3 20-1z" fill="#abd484"/>
-          <path d="M40 34c9-2.5 16 1 20 8-6 3.5-13 3-20-1z" fill="#8fbc6a"/>
-          <path d="M40 24c-6-4-10-3-12 1 3 4 8 5 12 2z" fill="#bee098"/>
-          <path d="M40 24c6-4 10-3 12 1-3 4-8 5-12 2z" fill="#9cc876"/>
-          <path d="M40 16c-3-6-2-11 2-12 4 3 5 8 2 14-1-.5-3-1-4-2z" fill="#d0ecad"/>
-        </g>
-      </svg>`;
-}
-
 function renderHeader({ active } = {}) {
   const blogClass = active === "blog" ? ' aria-current="page"' : "";
   return `<header class="site-header" id="top">
-    <span class="header-leaf header-leaf--tl" aria-hidden="true">${leafSvg("rotate(-38 40 40)")}</span>
-    <span class="header-leaf header-leaf--tr" aria-hidden="true">${leafSvg("rotate(38 40 40)")}</span>
-    <span class="header-leaf header-leaf--bl" aria-hidden="true">${leafSvg("rotate(-38 40 40)")}</span>
-    <span class="header-leaf header-leaf--br" aria-hidden="true">${leafSvg("rotate(38 40 40)")}</span>
     <div class="header-inner">
       <a class="logo" href="../index.html">
-        <span class="logo-ornament" aria-hidden="true"></span>
-        <span class="logo-text">${escapeHtml(SITE_NAME)}</span>
-        <span class="logo-ornament" aria-hidden="true"></span>
+        <img src="../assets/logo.png" alt="${escapeHtml(SITE_NAME)}" width="835" height="721" />
       </a>
       <button class="nav-toggle" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="site-nav">
         <span></span><span></span>

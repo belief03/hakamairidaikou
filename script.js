@@ -114,12 +114,6 @@
     });
   });
 
-  window.addEventListener("resize", () => {
-    if (window.innerWidth > 720) {
-      closeNav();
-    }
-  });
-
   const updateActiveNav = () => {
     const offset = window.scrollY + (header?.offsetHeight || 0) + 40;
     let currentId = "";
