@@ -135,7 +135,7 @@ function renderHeader({ active } = {}) {
   return `<header class="site-header" id="top">
     <div class="header-inner">
       <a class="logo" href="../index.html">
-        <img src="../assets/logo-mark.png" alt="${escapeHtml(SITE_NAME)}" width="835" height="721" />
+        <img src="../assets/logo-wordmark.png" alt="${escapeHtml(SITE_NAME)}" width="685" height="312" />
       </a>
       <button class="nav-toggle" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="site-nav">
         <span></span><span></span>
@@ -155,9 +155,6 @@ function renderHeader({ active } = {}) {
 function renderFooter() {
   return `<footer class="site-footer">
     <div class="footer-inner">
-      <a class="footer-logo" href="../index.html" aria-label="${escapeHtml(SITE_NAME)}">
-        <img src="../assets/logo-mark.png" alt="" width="835" height="721" />
-      </a>
       <p class="footer-brand">${escapeHtml(SITE_NAME)}</p>
       <p class="footer-meta">〒502-0838 岐阜県岐阜市長良丘1-2</p>
       <p class="footer-meta"><a href="tel:09034571149">090-3457-1149</a></p>
