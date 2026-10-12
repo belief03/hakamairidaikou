@@ -238,32 +238,13 @@ p {
   z-index: 1;
   display: grid;
   align-items: end;
-  min-height: clamp(24rem, 52vh, 36rem);
   overflow: hidden;
-  background: #24302a;
-}
-
-.hero-stage-bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background:
-    url("https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=2000&q=80")
-      center / cover no-repeat;
-  transform: scale(1.04);
-  animation: hero-drift 18s var(--ease) infinite alternate;
+  background: var(--bg-tone-a);
+  color: var(--ink);
 }
 
 .hero-veil {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(238, 242, 239, 0.72) 0%,
-    rgba(42, 51, 46, 0.15) 40%,
-    rgba(42, 51, 46, 0.55) 100%
-  );
+  display: none;
 }
 
 .hero-content {
@@ -290,7 +271,7 @@ p {
   font-family: var(--font-display);
   font-size: clamp(0.92rem, 1.8vw, 1.08rem);
   letter-spacing: 0.14em;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--ink-muted);
   animation-delay: 0.08s;
 }
 
@@ -301,7 +282,7 @@ p {
   letter-spacing: 0.12em;
   line-height: 1.5;
   padding-inline-end: 0.12em;
-  color: #fff;
+  color: var(--ink);
   animation-delay: 0.2s;
 }
 
@@ -313,7 +294,7 @@ p {
 .hero-lead {
   margin-top: 1.15rem;
   max-width: 100%;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--ink-muted);
   font-family: var(--font-display);
   font-size: clamp(1.05rem, 2.2vw, 1.55rem);
   letter-spacing: 0.1em;
@@ -340,7 +321,7 @@ p {
   gap: 0.45rem;
   width: max-content;
   margin-inline: auto;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--ink-muted);
   text-decoration: none;
   opacity: 0;
   animation: rise-in 0.9s var(--ease) 1s forwards;
@@ -415,6 +396,18 @@ p {
   background: rgba(255, 255, 255, 0.24);
   color: #fff;
   border-color: #fff;
+}
+
+.hero-stage .btn-ghost {
+  background: transparent;
+  color: var(--accent-deep);
+  border-color: var(--accent);
+}
+
+.hero-stage .btn-ghost:hover {
+  background: rgba(79, 107, 90, 0.08);
+  color: var(--accent-deep);
+  border-color: var(--accent-deep);
 }
 
 .section {
@@ -882,6 +875,44 @@ p {
   background: var(--bg-tone-b);
 }
 
+.price-recommend {
+  margin: 1.75rem auto 0;
+  max-width: 34rem;
+}
+
+.price-recommend h3 {
+  font-size: 1.05rem;
+  letter-spacing: 0.12em;
+  color: var(--accent-deep);
+}
+
+.price-recommend ul {
+  list-style: none;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.price-recommend li {
+  position: relative;
+  padding-left: 1.35rem;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+}
+
+.price-recommend li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
 .price-board {
   margin-top: 2.5rem;
   display: grid;
@@ -1004,6 +1035,13 @@ p {
   font-family: var(--font-display);
   font-size: 1.15rem;
   letter-spacing: 0.08em;
+}
+
+.price-card-tax {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
 }
 
 .price-card-note {
@@ -1277,6 +1315,20 @@ p {
   text-align: center;
 }
 
+.footer-logo {
+  display: inline-block;
+  margin: 0 0 0.85rem;
+  line-height: 0;
+  text-decoration: none;
+}
+
+.footer-logo img {
+  display: block;
+  height: 5.5rem;
+  width: auto;
+  margin: 0 auto;
+}
+
 .footer-brand {
   margin: 0;
   font-size: 1.15rem;
@@ -1317,12 +1369,6 @@ p {
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes hero-drift {
-  to {
-    transform: scale(1.08) translateY(-1.2%);
   }
 }
 
@@ -1453,6 +1499,10 @@ p {
     height: 4.45rem;
   }
 
+  .footer-logo img {
+    height: 4.6rem;
+  }
+
   .hero-media {
     height: 78svh;
     min-height: 22rem;
@@ -1466,15 +1516,6 @@ p {
     min-height: 0;
   }
 
-  .hero-veil {
-    background: linear-gradient(
-      180deg,
-      rgba(238, 242, 239, 0.42) 0%,
-      rgba(42, 51, 46, 0.16) 42%,
-      rgba(42, 51, 46, 0.48) 100%
-    );
-  }
-
   .hero-content {
     padding: 2.75rem 1.55rem 3.1rem;
     text-align: left;
@@ -1484,7 +1525,6 @@ p {
     margin-bottom: 0.55rem;
     font-size: 0.86rem;
     letter-spacing: 0.08em;
-    text-shadow: 0 1px 10px rgba(20, 28, 24, 0.3);
   }
 
   .hero h1 {
@@ -1494,7 +1534,6 @@ p {
     letter-spacing: 0.08em;
     line-height: 1.5;
     padding-inline-end: 0.08em;
-    text-shadow: 0 1px 12px rgba(20, 28, 24, 0.35);
   }
 
   .hero h1 .hero-line,
@@ -1509,7 +1548,6 @@ p {
     font-size: clamp(0.92rem, 3.4vw, 1.02rem);
     letter-spacing: 0.05em;
     line-height: 1.5;
-    text-shadow: 0 1px 10px rgba(20, 28, 24, 0.3);
   }
 
   .hero-actions {
@@ -2458,7 +2496,6 @@ p {
   }
 
   .hero-video,
-  .hero-stage-bg,
   .hero h1,
   .hero-eyebrow,
   .hero-lead,
