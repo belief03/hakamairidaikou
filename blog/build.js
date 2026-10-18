@@ -2,7 +2,7 @@
  * microCMS の blogs API（または fixtures）から静的ブログ HTML / sitemap を生成する。
  *
  * 環境変数:
- *   MICROCMS_SERVICE_DOMAIN  例: hakamairidaikou
+ *   MICROCMS_SERVICE_DOMAIN  例: hakamorinotami
  *   MICROCMS_API_KEY         APIキー
  *
  * 未設定時は blog/fixtures/posts.json を使用します。
@@ -79,7 +79,7 @@ function extractImage(field) {
 }
 
 function normalizePost(raw) {
-  const slug = slugify(raw.slug || raw.id);
+  const slug = slugify(raw.slug) || slugify(raw.id);
   if (!slug) return null;
   const eyecatch = extractImage(raw.blogs || raw.eyecatch || raw.thumbnail || raw.image);
   return {
@@ -113,6 +113,9 @@ async function fetchFromMicroCMS() {
     }
     const data = await res.json();
     const batch = Array.isArray(data.contents) ? data.contents : [];
+    if (offset === 0) {
+      console.log(`microCMS ${ENDPOINT} totalCount=${Number(data.totalCount) || 0}`);
+    }
     contents.push(...batch);
     if (contents.length >= (data.totalCount || contents.length) || batch.length === 0) {
       break;
@@ -518,11 +521,10 @@ function syncPublic() {
 
 async function main() {
   let rawPosts = await fetchFromMicroCMS();
-  if (!rawPosts || rawPosts.length === 0) {
-    if (process.env.MICROCMS_SERVICE_DOMAIN && process.env.MICROCMS_API_KEY) {
-      console.warn("microCMS returned 0 posts. Falling back to fixtures.");
-    }
+  if (!rawPosts) {
     rawPosts = loadFixtures();
+  } else if (rawPosts.length === 0) {
+    throw new Error("microCMS returned 0 published posts. Refusing to publish the sample articles.");
   }
 
   const posts = rawPosts

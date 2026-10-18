@@ -28,16 +28,15 @@ jobs:
           node-version: "20"
       - name: Require microCMS credentials
         env:
-          MICROCMS_SERVICE_DOMAIN: ${{ secrets.MICROCMS_SERVICE_DOMAIN }}
           MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
         run: |
-          if [ -z "$MICROCMS_SERVICE_DOMAIN" ] || [ -z "$MICROCMS_API_KEY" ]; then
-            echo "microCMS secrets are missing on this repository."
+          if [ -z "$MICROCMS_API_KEY" ]; then
+            echo "MICROCMS_API_KEY is missing on this repository."
             exit 1
           fi
       - name: Build site from microCMS
         env:
-          MICROCMS_SERVICE_DOMAIN: ${{ secrets.MICROCMS_SERVICE_DOMAIN }}
+          MICROCMS_SERVICE_DOMAIN: hakamorinotami
           MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
         run: npm run build
       - name: Keep the custom domain
