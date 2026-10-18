@@ -4,7 +4,7 @@
 
 ## 1. microCMS（作成済み想定）
 
-- API: リスト形式 / エンドポイント名 `blog`（`site.config.json` の `microcmsEndpoint`）
+- API: リスト形式 / エンドポイント名 `blogs`（`site.config.json` の `microcmsEndpoint`）
 - フィールド:
 
 | フィールドID | 表示名 | 種類 | 必須 |
