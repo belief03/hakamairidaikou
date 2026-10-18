@@ -1,5 +1,5 @@
 /**
- * microCMS の blogs API（または fixtures）から静的ブログ HTML / sitemap を生成する。
+ * microCMS の blog API（または fixtures）から静的ブログ HTML / sitemap を生成する。
  *
  * 環境変数:
  *   MICROCMS_SERVICE_DOMAIN  例: hakamorinotami
@@ -18,7 +18,7 @@ const CONFIG_PATH = path.join(ROOT, "site.config.json");
 const config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
 const SITE_URL = String(config.siteUrl || "").replace(/\/$/, "");
 const SITE_NAME = config.siteName || "墓守の民";
-const ENDPOINT = config.microcmsEndpoint || "blogs";
+const ENDPOINT = config.microcmsEndpoint || "blog";
 
 function escapeHtml(value) {
   return String(value ?? "")
